@@ -8,7 +8,17 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
 
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
+        <!--テキスト部分-->
         <ScrollViewer>
             <ItemsControl ItemsSource="{Binding Messages}" Margin="32,0,32,0">
                 <ItemsControl.ItemTemplate>
@@ -24,5 +34,9 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+        
+        <!--音量-->
+        <Label Grid.Row="1" HorizontalContentAlignment="Center" Content="{Binding Volume}"
+               FontSize="24" FontWeight="Bold" Foreground="Blue"/>
     </Grid>
 </Window>

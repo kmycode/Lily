@@ -54,7 +54,12 @@ public class CSharpClientSender {
 		Gson gson = new Gson();
 		String data = gson.toJson(result);
 		this.send('r', data);
-		System.out.println("[Sent]");
+	}
+
+	public void send(SoundInformation info) {
+		Gson gson = new Gson();
+		String data = gson.toJson(info);
+		this.send('v', data);
 	}
 
 	private void send(char signature, String data) {

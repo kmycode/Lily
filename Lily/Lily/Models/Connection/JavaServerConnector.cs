@@ -20,6 +20,7 @@ namespace Lily.Models.Connection
 		private readonly JavaServerReceiver receiver;
 
 		public IObservable<IMessage> MessageObservable => this.receiver;
+		public IObservable<SoundInformation> SoundObservable => this.receiver;
 
 		public JavaServerConnector()
 		{
@@ -45,22 +46,5 @@ namespace Lily.Models.Connection
 		{
 			this.Dispose();
 		}
-
-		private void CreatePipe()
-		{
-			CreateNamedPipe(@"\\.\pipe\" + PipeName, 3, 0, 255, 4096, 4096, 30000, IntPtr.Zero);
-		}
-
-		[DllImport("kernel32")]
-		static extern IntPtr CreateNamedPipe(
-			string lpName,
-			UInt32 dwOpenMode,
-			UInt32 dwPipeMode,
-			UInt32 nMaxInstances,
-			UInt32 nOutBufferSize,
-			UInt32 nInBufferSize,
-			UInt32 nDefaultTimeOut,
-			IntPtr lpSecurityAttributes
-		);
 	}
 }

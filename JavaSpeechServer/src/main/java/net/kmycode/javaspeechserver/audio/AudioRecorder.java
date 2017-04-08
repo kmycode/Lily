@@ -107,10 +107,10 @@ public class AudioRecorder {
 	}
 
 	public boolean isSound() {
-		return this.getBufferAbsAverage() > 0.0003;
+		return this.getVolume() > 0.0003;
 	}
 
-	private float getBufferAbsAverage() {
+	public float getVolume() {
 		float sum = 0;
 		int count = 0;
 

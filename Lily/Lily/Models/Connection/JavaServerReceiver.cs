@@ -13,11 +13,12 @@ namespace Lily.Models.Connection
 	/// <summary>
 	/// Javaからのパイプ通信を受け取るクラス
 	/// </summary>
-	class JavaServerReceiver : IObservable<IMessage>, IDisposable
+	class JavaServerReceiver : IObservable<IMessage>, IObservable<SoundInformation>, IDisposable
 	{
 		private readonly string pipeName;
 		private readonly NamedPipeServerStream client;
 		private readonly Subject<IMessage> messageSubject = new Subject<IMessage>();
+		private readonly Subject<SoundInformation> soundSubject = new Subject<SoundInformation>();
 		private bool isStopReceiveLoop;
 
 		public JavaServerReceiver(string pipeName)
@@ -93,6 +94,9 @@ namespace Lily.Models.Connection
 				case 'r':
 					this.ReadRecognitionResult(json);
 					break;
+				case 'v':
+					this.ReadSoundInformation(json);
+					break;
 			}
 		}
 
@@ -110,9 +114,24 @@ namespace Lily.Models.Connection
 			this.messageSubject.OnNext(message);
 		}
 
+		/// <summary>
+		/// データを、音声情報とみなして処理する
+		/// </summary>
+		/// <param name="json">JSON文字列</param>
+		private void ReadSoundInformation(string json)
+		{
+			var obj = JsonConvert.DeserializeObject<SoundInformation>(json);
+			this.soundSubject.OnNext(obj);
+		}
+
 		public IDisposable Subscribe(IObserver<IMessage> observer)
 		{
 			return ((IObservable<IMessage>)this.messageSubject).Subscribe(observer);
+		}
+
+		public IDisposable Subscribe(IObserver<SoundInformation> observer)
+		{
+			return ((IObservable<SoundInformation>)this.soundSubject).Subscribe(observer);
 		}
 	}
 }
