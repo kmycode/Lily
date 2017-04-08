@@ -9,6 +9,8 @@ import io.grpc.ManagedChannel;
 import java.io.IOException;
 import net.kmycode.javaspeechserver.audio.AudioRecorder;
 import net.kmycode.javaspeechserver.cloud.StreamingRecognizeClient;
+import net.kmycode.javaspeechserver.connection.CSharpClientSender;
+import net.kmycode.javaspeechserver.connection.RecognitionResult;
 
 /**
  *
@@ -26,6 +28,9 @@ public class JavaSpeechServer {
 		StreamingRecognizeClient client = new StreamingRecognizeClient(channel);
 
 		final AudioRecorder recorder = AudioRecorder.getDefault();
+		final CSharpClientSender sender = CSharpClientSender.getDefault();
+
+		sender.send(new RecognitionResult(0, "Connection Succeed"));
 
 		try {
 			recorder.start();
@@ -39,6 +44,7 @@ public class JavaSpeechServer {
 		} finally {
 			client.shutdown();
 			recorder.stop();
+			sender.close();
 		}
 	}
 }

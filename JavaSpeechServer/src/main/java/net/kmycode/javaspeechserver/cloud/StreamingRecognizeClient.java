@@ -27,6 +27,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.kmycode.javaspeechserver.audio.AudioRecorder;
+import net.kmycode.javaspeechserver.connection.CSharpClientSender;
+import net.kmycode.javaspeechserver.connection.RecognitionResult;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.ConsoleAppender;
 import static org.apache.log4j.ConsoleAppender.SYSTEM_OUT;
@@ -42,14 +44,17 @@ import org.apache.log4j.SimpleLayout;
 public class StreamingRecognizeClient {
 
 	private static final Logger logger = Logger.getLogger(StreamingRecognizeClient.class.getName());
+	private static final List<String> OAUTH2_SCOPES = Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
+	private static final String CREDENTIAL_PATH = ".\\credential\\SpeechTest-d2316e38bee3.json";
+	private static int messageId = 1;
 
 	private final AudioRecorder recorder = AudioRecorder.getDefault();
+	private final CSharpClientSender sender = CSharpClientSender.getDefault();
+
 	private StreamObserver<StreamingRecognizeRequest> requestObserver;
 	private int notSoundCount = 0;
 	private final ManagedChannel channel;
 	private final SpeechGrpc.SpeechStub speechClient;
-	private static final List<String> OAUTH2_SCOPES = Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
-	private static final String CREDENTIAL_PATH = ".\\credential\\SpeechTest-d2316e38bee3.json";
 	private final Queue<ByteString> byteStringQueue = new ArrayDeque<>();
 
 	/**
@@ -85,10 +90,14 @@ public class StreamingRecognizeClient {
 		return channel;
 	}
 
+	private static int newId() {
+		return messageId++;
+	}
+
 	/** Send streaming recognize requests to server. */
 	public void recognize() throws InterruptedException, IOException {
-		final AudioRecorder recorder = AudioRecorder.getDefault();
 		final StopWatch stopwatch = new StopWatch();
+		final int messageId = newId();
 
 		final CountDownLatch finishLatch = new CountDownLatch(1);
 		StreamObserver<StreamingRecognizeResponse> responseObserver =
@@ -123,10 +132,14 @@ public class StreamingRecognizeClient {
 							this.sentenceLength = 1;
 							finishLatch.countDown();
 						} else {
-							format += '\r';
+							//format += '\r';
+							format += '\n';
 							this.sentenceLength = transcript.length();
 						}
 						System.out.print(String.format(format, transcript));
+
+						RecognitionResult resultData = new RecognitionResult(messageId, transcript);
+						StreamingRecognizeClient.this.sender.send(resultData);
 					}
 
 					@Override
