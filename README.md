@@ -24,7 +24,7 @@ Google Cloud Speech APIを利用したリアルタイム音声認識を、Java�
 - 「JavaSpeechServer」内に「credential」フォルダを作ります
 - Cloud Speech API（※not Speech API）と関連付けられたGoogle Cloud Platformプロジェクトのサーバーキーを作成し、その時に落としたjsonファイルをcredentialフォルダにコピーします。ファイルの名前は「SpeechTest-d2316e38bee3.json」に変更します（あるいはプログラム内のコードを修正します）
 - コンパイルします
-- 実行します（NetBeaansプロジェクトでプロジェクトを開いた場合は、実行時オプションを手動で削除してください）
+- 実行します（NetBeaansでプロジェクトを開いた場合は、プロジェクト設定から実行時オプションを手動で削除してください）
 - 2017/4/8時点では、自動でプログラムが終了しないようになっています。音声認識を楽しんだら、NetBeansの右下にある停止ボタンなどからプログラムの実行を止めます
 
 #### 実行時に「Jetty ALPN/NPN has not been properly configured.」が出た時は
