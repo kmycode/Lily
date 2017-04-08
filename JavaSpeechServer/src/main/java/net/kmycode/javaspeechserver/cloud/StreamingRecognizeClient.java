@@ -186,23 +186,22 @@ public class StreamingRecognizeClient {
 			while (finishLatch.getCount() > 0 && recorder.read()) {
 				this.sender.send(new SoundInformation(this.recorder.getVolume()));
 
-				if (recorder.isSound()) {
-					ByteString data = this.recorder.getBufferAsByteString();
-					this.byteStringQueue.add(data);
+				ByteString data = this.recorder.getBufferAsByteString();
+				this.byteStringQueue.add(data);
 
-					if (!stopwatch.isStarted()) {
-						stopwatch.start();
-					}
-					else if (stopwatch.getTime() > 2000) {
-						this.byteStringQueue.clear();
-						break;
-					}
-
-					this.request(data);
+				if (!stopwatch.isStarted()) {
+					stopwatch.start();
 				}
-				else {
+				else if (stopwatch.getTime() > 2000) {
+					this.byteStringQueue.clear();
+					break;
+				}
+
+				this.request(data);
+
+				if (!recorder.isSound()) {
 					this.notSoundCount++;
-					if (this.notSoundCount >= 3) {
+					if (this.notSoundCount >= 5) {
 						// stop recognizition
 						break;
 					}
