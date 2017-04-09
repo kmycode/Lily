@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import net.kmycode.javaspeechserver.audio.AudioRecorder;
 import net.kmycode.javaspeechserver.connection.CSharpClientSender;
 import net.kmycode.javaspeechserver.connection.RecognitionResult;
-import net.kmycode.javaspeechserver.connection.SoundInformation;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.ConsoleAppender;
 import static org.apache.log4j.ConsoleAppender.SYSTEM_OUT;
@@ -184,8 +183,6 @@ public class StreamingRecognizeClient {
 
 			// Read and send sequential buffers of audio as additional RecognizeRequests.
 			while (finishLatch.getCount() > 0 && recorder.read()) {
-				this.sender.send(new SoundInformation(this.recorder.getVolume()));
-
 				ByteString data = this.recorder.getBufferAsByteString();
 				this.byteStringQueue.add(data);
 

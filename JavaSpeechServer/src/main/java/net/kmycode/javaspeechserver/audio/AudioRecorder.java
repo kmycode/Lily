@@ -11,6 +11,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
+import net.kmycode.javaspeechserver.connection.CSharpClientSender;
+import net.kmycode.javaspeechserver.connection.SoundInformation;
 
 /**
  *
@@ -35,6 +37,11 @@ public class AudioRecorder {
 	private int bytesPerBuffer; // buffer size in bytes
 	public int getBytesPerBuffer() {
 		return this.bytesPerBuffer;
+	}
+
+	private float volume;
+	public float getVolume() {
+		return this.volume;
 	}
 
 	private static AudioRecorder defaultInstance;
@@ -87,6 +94,10 @@ public class AudioRecorder {
 	}
 
 	public boolean preRead() {
+		if (this.isPreRead) {
+			return this.preReadResult;
+		}
+
 		this.isPreRead = true;
 		this.preReadResult = this.readPrivate();
 		return this.preReadResult;
@@ -103,14 +114,20 @@ public class AudioRecorder {
 
 	private boolean readPrivate() {
 		this.bytesReadFromRecording = this.getAudioInputLine().read(this.buffer, 0, this.buffer.length);
-		return this.bytesReadFromRecording != -1;
+		boolean isReadSucceed = this.bytesReadFromRecording != -1;
+		
+		if (isReadSucceed) {
+			this.updateVolume();
+		}
+		
+		return isReadSucceed;
 	}
 
 	public boolean isSound() {
 		return this.getVolume() > 0.0003;
 	}
 
-	public float getVolume() {
+	private void updateVolume() {
 		float sum = 0;
 		int count = 0;
 
@@ -126,7 +143,8 @@ public class AudioRecorder {
 			count++;
 		}
 
-		return sum / count;
+		this.volume = sum / count;
+		CSharpClientSender.getDefault().send(new SoundInformation(this.volume));
 	}
 
 	public ByteString getBufferAsByteString() {
