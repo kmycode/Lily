@@ -34,9 +34,19 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        
-        <!--音量-->
-        <Label Grid.Row="1" HorizontalContentAlignment="Center" Content="{Binding Volume}"
-               FontSize="24" FontWeight="Bold" Foreground="Blue"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <!--音量-->
+            <Label HorizontalContentAlignment="Center" Content="{Binding Volume}"
+                   FontSize="24" FontWeight="Bold" Foreground="Blue"/>
+            
+            <!--録音ボタン-->
+            <Button Grid.Column="1" Content="録音開始 / 中止" Command="{Binding ToggleRecognizeCommand}"/>
+        </Grid>
     </Grid>
 </Window>

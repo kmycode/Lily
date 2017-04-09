@@ -9,7 +9,10 @@ import io.grpc.ManagedChannel;
 import java.io.IOException;
 import net.kmycode.javaspeechserver.audio.AudioRecorder;
 import net.kmycode.javaspeechserver.cloud.StreamingRecognizeClient;
+import net.kmycode.javaspeechserver.connection.CSharpClientConnector;
+import net.kmycode.javaspeechserver.connection.CSharpClientReceiver;
 import net.kmycode.javaspeechserver.connection.CSharpClientSender;
+import net.kmycode.javaspeechserver.connection.ClientState;
 import net.kmycode.javaspeechserver.connection.RecognitionResult;
 
 /**
@@ -23,21 +26,26 @@ public class JavaSpeechServer {
 		int sampling = 16000;
 
 		AudioRecorder.initialize(sampling, sampling * AudioRecorder.BYTES_PER_SAMPLE / 10); // bytesPerBuffer: 100 ms
+		CSharpClientConnector.initialize();
 
 		ManagedChannel channel = StreamingRecognizeClient.createChannel(host, port);
 		StreamingRecognizeClient client = new StreamingRecognizeClient(channel);
 
 		final AudioRecorder recorder = AudioRecorder.getDefault();
 		final CSharpClientSender sender = CSharpClientSender.getDefault();
+		final CSharpClientReceiver receiver = CSharpClientReceiver.getDefault();
 
 		sender.send(new RecognitionResult(0, "Connection Succeed"));
+		final ClientState state = receiver.beginLoop();
 
 		try {
 			recorder.start();
 
 			while (true) {
-				if (recorder.preRead() && recorder.isSound()) {
+				if (recorder.preRead() && recorder.isSound() && state.isRecognize()) {
 					client.recognize();
+				} else {
+					recorder.skip();
 				}
 				Thread.sleep(100);
 			}

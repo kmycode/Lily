@@ -103,6 +103,15 @@ public class AudioRecorder {
 		return this.preReadResult;
 	}
 
+	public void skip() {
+		if (this.isPreRead) {
+			this.isPreRead = false;
+		}
+		else {
+			this.readPrivate();
+		}
+	}
+
 	public boolean read() {
 		if (this.isPreRead) {
 			this.isPreRead = false;

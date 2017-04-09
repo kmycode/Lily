@@ -1,4 +1,5 @@
-﻿using Lily.Models;
+﻿using Lily.Common;
+using Lily.Models;
 using Lily.Models.Connection;
 using Lily.Models.Message;
 using System;
@@ -39,6 +40,26 @@ namespace Lily.ViewModels
 			// ObservableとObserverをつなげる
 			this.connector.MessageObservable.Subscribe(this.Messages);
 			this.connector.SoundObservable.Subscribe(this.sound);
+
+			// イベントをつなげる
+			this.sound.RecognizeStartRequested += this.connector.Sender.Requested_StartRecognize;
+			this.sound.RecognizeStopRequested += this.connector.Sender.Requested_StopRecognize;
 		}
+
+		/// <summary>
+		/// 録音する・しないを切り替える
+		/// </summary>
+		public RelayCommand ToggleRecognizeCommand
+		{
+			get
+			{
+				return this._toggleRecognizeCommand = this._toggleRecognizeCommand ?? new RelayCommand(() =>
+				{
+					this.sound.ToggleRecognize();
+				});
+			}
+		}
+		private RelayCommand _toggleRecognizeCommand;
+
 	}
 }

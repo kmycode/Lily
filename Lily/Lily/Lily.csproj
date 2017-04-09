@@ -73,8 +73,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Models\Connection\JavaServerConnector.cs" />
     <Compile Include="Models\Connection\JavaServerReceiver.cs" />
+    <Compile Include="Models\Connection\JavaServerSender.cs" />
     <Compile Include="Models\Connection\RecognitionResult.cs" />
     <Compile Include="Models\Connection\SoundInformation.cs" />
     <Compile Include="Models\Message\IMessage.cs" />

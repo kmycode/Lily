@@ -31,6 +31,43 @@ namespace Lily.Models
 		}
 		private float _volume;
 
+		/// <summary>
+		/// 音声認識するかどうか
+		/// </summary>
+		public bool IsRecognize
+		{
+			get
+			{
+				return this._isRecognize;
+			}
+			set
+			{
+				if (this._isRecognize != value)
+				{
+					this._isRecognize = value;
+					this.OnPropertyChanged();
+				}
+			}
+		}
+		private bool _isRecognize;
+
+		/// <summary>
+		/// 音声認識するかどうかを切り替える
+		/// </summary>
+		public void ToggleRecognize()
+		{
+			if (this.IsRecognize)
+			{
+				this.IsRecognize = false;
+				this.RecognizeStopRequested?.Invoke(this, new EventArgs());
+			}
+			else
+			{
+				this.IsRecognize = true;
+				this.RecognizeStartRequested?.Invoke(this, new EventArgs());
+			}
+		}
+		
 		#region IObserver
 
 		public void OnNext(SoundInformation value)
@@ -47,6 +84,13 @@ namespace Lily.Models
 		{
 			throw new NotImplementedException();
 		}
+
+		#endregion
+
+		#region イベント
+
+		public event EventHandler RecognizeStartRequested;
+		public event EventHandler RecognizeStopRequested;
 
 		#endregion
 

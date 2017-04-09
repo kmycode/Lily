@@ -7,7 +7,6 @@ package net.kmycode.javaspeechserver.connection;
 
 import com.google.gson.Gson;
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -15,8 +14,6 @@ import java.io.IOException;
  * @author KMY
  */
 public class CSharpClientSender {
-
-	private static final String PIPE_NAME = "lily_speech";
 
 	private BufferedWriter server;
 
@@ -28,13 +25,8 @@ public class CSharpClientSender {
 		return defaultInstance;
 	}
 
-	public CSharpClientSender() {
-		try {
-			this.server = new BufferedWriter(new FileWriter("\\\\.\\pipe\\" + PIPE_NAME));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+	void setServer(BufferedWriter server) {
+		this.server = server;
 	}
 
 	public void close() {
