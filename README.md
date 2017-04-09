@@ -2,7 +2,7 @@
 
 Google Cloud Speech APIを利用したリアルタイム音声認識を、JavaとC#のプロセス間通信を利用してWPFで動かそうというリポジトリです。<br>
 成功するかどうかは分かりません。<br>
-開発はdevelopブランチで進めています。適宜ブランチの切り替えをお願いします。
+<b>開発はdevelopブランチで進めています</b>。適宜ブランチの切り替えをお願いします。
 
 ## 開発環境
 
@@ -16,7 +16,7 @@ Google Cloud Speech APIを利用したリアルタイム音声認識を、Java�
 
 ## セットアップ
 
-### Java
+### Javaプログラムだけを実行
 
 - リポジトリからファイルを落とします
 - 「JavaSpeechServer」フォルダをNetBeansなどお好みのIDEで開きます
@@ -37,3 +37,15 @@ Google Cloud Speech APIを利用したリアルタイム音声認識を、Java�
 -Xbootclasspath/p:jars\alpn-boot-8.1.9.v20160720.jar
 -javaagent:jars\jetty-alpn-agent-2.0.6.jar
 ```
+
+### C#プログラムを実行
+
+C#は、Javaのプログラムを呼び出します。<br>
+以上の手順を参考に、Javaプログラムをビルドして、「target」フォルダ内に「JavaSpeechServer-1.0-SNAPSHOT-jar-with-dependencies.jar」という名前のファイルを作ります。<br>
+NetBeansでは、このプロセスが自動的に実行されることを確認しています。もしNetBeans以外をお使いの場合は、適切な場所に適切な名前のファイルがあるか確認してください。
+
+C#プログラムは、「実行時にJetty ALPN/NPN has not～～が出た時は」の対策が完了していることを前提としています。<br>
+Javaプロジェクト内の「jars」フォルダ内に、jarファイルをコピーする必要があります。<br>
+なお、java.exe起動時のオプションは、C#プログラム内ですでに設定されていますので不要です。
+
+Visual Studioで、DebugまたはReleaseでプログラムを実行します。
