@@ -133,7 +133,7 @@ public class AudioRecorder {
 	}
 
 	public boolean isSound() {
-		return this.getVolume() > 0.0003;
+		return this.getVolume() > 0.00028;
 	}
 
 	private void updateVolume() {
@@ -146,7 +146,7 @@ public class AudioRecorder {
 
 			short valueInteger = (short) ((h << 8) | l);
 			if (valueInteger < 0) valueInteger *= -1;
-			float value = (float)(int)valueInteger / 65536;
+			float value = (float)(int)valueInteger / 32768;
 
 			sum += value;
 			count++;
